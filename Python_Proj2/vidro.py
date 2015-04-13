@@ -200,11 +200,12 @@ class Vidro:
 			#for GCS with wireless radio
 			#self.baud = 57600 
 			#self.device = '/dev/ttyUSB0'
-			
-			#for raspberry pi
-			self.baud = 115200 
-			self.device = '/dev/ttyACM0'
-			
+
+			#for BeagleBone Black
+			self.baud = 57600
+			self.device = '/dev/ttyUSB0'
+
+            #TODO May have to change these
 			self.base_rc_roll = 1519
 			self.base_rc_pitch = 1519
 			self.base_rc_throttle = 1516
@@ -264,6 +265,7 @@ class Vidro:
 		#Start of a log
 		logging.basicConfig(filename='vidro.log', level=logging.DEBUG)
 
+    #TODO Read this stuff
 	def connect_mavlink(self):
 		"""
 		Initialize connection to pixhawk and make sure to get first heartbeat message
@@ -381,14 +383,6 @@ class Vidro:
 				return False
 		print "Vicon Connected..."
 		return True
-		"""
-		if len(self.s.getData()) < 51:
-			self.num_vicon_objs = 1
-		elif len(self.s.getData()) > 50:
-			self.num_vicon_objs = 2
-		else:
-			logging.error('Number of Vicon objects was not set. This means that length of s.getData() was not correct')
-		"""
 
 	def disconnect_vicon(self):
 		"""
@@ -413,6 +407,7 @@ class Vidro:
 		if self.sitl == False:
 			self.disconnect_vicon()
 
+    #Wont be using vicon data
 	def get_vicon(self):
 		"""
 		Gets vicon data in the folling format:
@@ -592,9 +587,9 @@ class Vidro:
 		"""
 		try:
 			if self.num_vicon_objs == 1:
-				yaw = math.degrees((self.get_vicon()[6]*(1.0)) % ((2*math.pi)*(1.0)))*-1
+				yaw = math.degrees((self.get_vicon()[6]*(1.0)) % ((2*math.pi)*(1.0)))
 			if self.num_vicon_objs == 2:
-				yaw = math.degrees((self.get_vicon()[9]*(1.0)) % ((2*math.pi)*(1.0)))*-1
+				yaw = math.degrees((self.get_vicon()[9]*(1.0)) % ((2*math.pi)*(1.0)))
 			self.vicon_error = False
 			if yaw < 0.0:
 				yaw += 360
