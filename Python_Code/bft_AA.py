@@ -40,7 +40,7 @@ seq1_cnt = 0
 seq2_cnt = 0
 seq3_cnt = 0
 
-
+off_cnt = 0
 
 # Err Bounds
 pos_bound_err = 100
@@ -147,8 +147,11 @@ while(1):
 			vidro.close()
 			break	# this break won't break all the loops, just the auto loop
 
-#if vidro.current_rc_channels[4] < 1600:
-#	controller.vidro.rc_throttle_reset()
+	if vidro.current_rc_channels[4] < 1600:
+		controller.vidro.rc_throttle_reset()
+		off_count += 1
+		if off_count == 100
+			controller.vidro.set_rc_throttle = 0
 
 
 
