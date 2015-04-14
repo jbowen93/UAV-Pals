@@ -194,7 +194,7 @@ class Vidro:
 			
 			self.base_rc_roll = 1535
 			self.base_rc_pitch = 1535
-			self.base_rc_throttle = 1370
+			self.base_rc_throttle = 1520
 			self.base_rc_yaw = 1470
 		else:
 			#for GCS with wireless radio

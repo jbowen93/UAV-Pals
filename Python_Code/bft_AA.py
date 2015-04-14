@@ -50,7 +50,7 @@ reset_val = 1
 
 ADC.setup()
 
-logging.basicConfig(filename = 'testlog3.log', filemode = 'w', level = logging.DEBUG)
+logging.basicConfig(filename = 'flight1.log', level = logging.INFO)
 
 print('Heading to main loop')
 
@@ -61,7 +61,7 @@ print('Heading to main loop')
 while(1):
 	vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
-	# Auto Loop
+	#Auto Loop
 	while vidro.current_rc_channels[4] > 1600:
 		if(reset_val):
 			print 'Reset Over-rides'
@@ -69,6 +69,7 @@ while(1):
 			reset_val = 0
 
 		vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
+
 		#Reset of errors after each time control loop finishes
 		controller.I_error_alt = 0
 
@@ -87,10 +88,12 @@ while(1):
 			error_z = controller.rc_alt(alt_com)
 			if error_z is None:
 			    error_z = 0
+			elif abs(error_z) > 3500:
+			    error_z = 800
 			else:
 			    error_z = error_z
-                        print('Sequence 0')
-			print('Error z is %f' %error_z)
+		        #print('Sequence 0')
+			#print('Error z is %f' %error_z)
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq0_cnt += 1 # just update the sequence if the loop is closed for 20 software loops
 				if seq0_cnt == 20:
@@ -100,11 +103,17 @@ while(1):
 		if sequence == 1:
 			error_z = controller.rc_alt(alt_com)
 			#print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
-                        print('Sequence 1')
+
+		        #print('Sequence 1')
 			if error_z is None:
 			    error_z = 0
+			elif abs(error_z) > 3500:
+			    error_z = 800
 			else:
 			    error_z = error_z
+
+			#print('Error z is %f' %error_z)
+
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq1_cnt += 1
 				if seq1_cnt == 100:
@@ -115,11 +124,16 @@ while(1):
 		if sequence == 2:
 			error_z = controller.rc_alt(alt_com)
 			#print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
-                        print('Sequence 2')
+
+		        #print('Sequence 2')
 			if error_z is None:
 			    error_z = 0
+			elif abs(error_z) > 3500:
+			    error_z = 800
 			else:
 			    error_z = error_z
+
+			#print('Error z is %f' %error_z)
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				alt_com -= 1
 				if(alt_com<170):
@@ -133,8 +147,9 @@ while(1):
 			vidro.close()
 			break	# this break won't break all the loops, just the auto loop
 
-	if vidro.current_rc_channels[4] < 1600:
-		controller.vidro.rc_throttle_reset()
+#if vidro.current_rc_channels[4] < 1600:
+#	controller.vidro.rc_throttle_reset()
+
 
 
 

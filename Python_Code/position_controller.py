@@ -57,7 +57,7 @@ class PositionController:
 
 
         #Initalization of log
-        logging.basicConfig(filename='controller.log', level=logging.DEBUG)
+        logging.basicConfig(filename='controller.log', filtetype = 'w', level=logging.DEBUG)
 
 
         #Base RC values and path for gains file
@@ -93,11 +93,11 @@ class PositionController:
         delta_t = current_time - self.previous_time_alt
         self.previous_time_alt = current_time
 
-        #TODO Need to change how we are getting error!!
         #Get error
         #Changed to not use vicon positioning
         self.distance = ultra.get_dist()
         self.error_alt= target_alt - self.distance
+	logging.debug('ultrasonic distance is %f' %self.distance)
         #print('ultrasonic distance is %f' %self.distance)
 
         #Get error I

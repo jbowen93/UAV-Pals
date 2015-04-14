@@ -19,9 +19,9 @@ def get_dist():
         #print('is %f' %readings[count -1])
 
         if count > 2:
-            if distance > (readings[count - 1] + 500):
+            if distance > (readings[count - 1] + 100):
                 distance = readings[count - 1]
-            elif distance <= (readings[count - 1] - 500):
+            elif distance <= (readings[count - 1] - 100):
                 distance = readings[count - 1]
 
         readings.append(distance)

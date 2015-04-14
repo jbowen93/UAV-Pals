@@ -194,7 +194,7 @@ class Vidro:
 			
 			self.base_rc_roll = 1535
 			self.base_rc_pitch = 1535
-			self.base_rc_throttle = 1370
+			self.base_rc_throttle = 1500
 			self.base_rc_yaw = 1470
 		else:
 			#for GCS with wireless radio
@@ -337,14 +337,14 @@ class Vidro:
 			except:
 				pass
 			
-			if self.vicon_time >= self.get_vicon()[0]:
-				logging.error('Vicon system values are remainng the same. Stop the system and restart the vicon values')
-				self.set_rc_throttle(self.base_rc_throttle)
-				self.set_rc_roll(self.base_rc_roll)
-				self.set_rc_pitch(self.base_rc_pitch)
-				self.set_rc_yaw(self.base_rc_yaw)
-				self.vicon_error = True
-			self.vicon_time = self.get_vicon()[0]
+##			if self.vicon_time >= self.get_vicon()[0]:
+##				logging.error('Vicon system values are remainng the same. Stop the system and restart the vicon values')
+##				self.set_rc_throttle(self.base_rc_throttle)
+##				self.set_rc_roll(self.base_rc_roll)
+##				self.set_rc_pitch(self.base_rc_pitch)
+##				self.set_rc_yaw(self.base_rc_yaw)
+##				self.vicon_error = True
+##			self.vicon_time = self.get_vicon()[0]
 
 			self.send_rc_overrides()
 
