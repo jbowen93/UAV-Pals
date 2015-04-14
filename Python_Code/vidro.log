@@ -14571,3 +14571,10 @@ INFO:root: Msg_Type:  ERR  Time: 10.839265823364258 X_err: -327.55597559942345 Y
 INFO:root: Msg_Type:  PWM  Time: 10.861027002334595 Roll: 1572 Pitch: 1626 Throttle: 1657 Yaw: 1520
 INFO:root: Msg_Type:  POS  Time: 10.862979888916016 X: 340.577991912624 Y: 365.88762899667654 Z: 923.0662738279278 Yaw: 0.0
 INFO:root: Msg_Type:  ERR  Time: 10.865980863571167 X_err: -337.2716242814791 Y_err: -364.80393857983415 Z_err: 98.96102865876014 Roll_err: 337.27162428147903 Pitch_err: 364.80393857983427 Yaw_err: 0.0
+ERROR:root:Unable to get position data from vicon
+ERROR:root:Unable to get the error for alt. This means vicon data is likely `None`
+ERROR:root:Unable to get position data from vicon
+ERROR:root:Unable to get the error for alt. This means vicon data is likely `None`
+ERROR:root:Unable to get the error for alt. This means vicon data is likely `None`
+ERROR:root:Unable to get the error for alt. This means vicon data is likely `None`
+ERROR:root:Unable to get the error for alt. This means vicon data is likely `None`

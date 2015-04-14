@@ -95,10 +95,18 @@ class PositionController:
 
         #TODO Need to change how we are getting error!!
         #Get error
-        #Changed to not use vicon positioning
-        self.distance = ultra.get_dist()
-        self.error_alt= target_alt - self.distance
-        #print('ultrasonic distance is %f' %self.distance)
+        try:
+            #Changed to not use vicon positioning
+	    self.distance = ultra.get_dist()
+            self.error_alt= target_alt - self.distance
+	    #print('ultrasonic distance is %f' %self.distance)
+        except:
+            logging.error('Unable to get the error for alt. This means vicon data is likely `None`')
+            self.vidro.set_rc_throttle(self.vidro.base_rc_throttle)
+            self.D_error_alt = 0
+            self.P_error_alt = 0
+            self.I_error_alt = 0
+            return
 
         #Get error I
         if abs(self.error_alt) < 1000:

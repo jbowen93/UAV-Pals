@@ -39,7 +39,7 @@ while(1):
 
         count += 1
 
-    average = summed/10.0
+    average = summed/9.0
 
     count = 1
     readings = [0]

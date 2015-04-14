@@ -7,10 +7,6 @@ import time
 
 def getDist(self):
 
-#ADC.setup()
-#logging.basicConfig(filename = 'testlog.log', filemode = 'w', level=logging.DEBUG)
-
-
 	while self.count < 10:
 
 	    #Take a reading

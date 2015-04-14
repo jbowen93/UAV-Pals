@@ -5,34 +5,34 @@ import Adafruit_BBIO.ADC as ADC
 import logging
 import time
 
-def getDist(self):
+#Function for Ultrasonic
+def get_dist():
+    count = 1
+    readings = [0]
+    while count < 10:
+        value = ADC.read("P9_40")
+        voltage = value * 1.5
 
-	while self.count < 10:
+        #Do conversion math here
+        distance = voltage / 0.00008901 * 1.175
+        #print('readings at %d' %count)
+        #print('is %f' %readings[count -1])
 
-	    #Take a reading
-	    self.value = ADC.read("P9_40")
-	    self.voltage = self.value * 1.5
+        if count > 2:
+            if distance > (readings[count - 1] + 500):
+                distance = readings[count - 1]
+            elif distance <= (readings[count - 1] - 500):
+                distance = readings[count - 1]
 
-	    #Do conversion math here
-	    self.distance = self.voltage / 0.00008901 * 1.175
+        readings.append(distance)
 
-	    if self.distance > (self.readings(count - 1) + 500):
-		self.distance = self.readings(count - 1)
-	    elif self.distance <= (self.readings(count - 1) - 500):
-		self.distance = self.readings(count - 1)
+        summed = sum(readings)
 
-	    self.readings.append(self.distance)
+        count += 1
 
-	    self.summed = sum(self.readings)
+    average = summed/9.0
 
-	    self.count += 1
+    count = 1
+    readings = [0]
 
-	self.average = self.summed/10.0
-
-	self.count = 0
-	del self.readings[:]
-
-	time.sleep(0.025)
-	print "Distance is %d" %self.average
-	logging.debug('Distance is %f' %self.average)
-	return self.average
+    return average
