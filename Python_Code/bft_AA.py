@@ -152,6 +152,7 @@ while(1):
 		off_count += 1
 		if off_count == 100
 			controller.vidro.set_rc_throttle = 0
+			off_count = 0
 
 
 
