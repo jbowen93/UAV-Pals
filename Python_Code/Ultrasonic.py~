@@ -8,7 +8,6 @@ class Ultrasonic:
 
         #setup ADC
         ADC.setup()
-        self.value = 0
         self.voltage = 0
         self.distance = 0
         self.count = 0
@@ -22,8 +21,7 @@ class Ultrasonic:
         while self.count < 10:
 
             #Take a reading
-            self.value = ADC.read("P9_40")
-            self.voltage = self.value * 1.8
+            self.voltage = ADC.read("P9_40")
 
             #Do conversion math here
             self.distance = self.voltage / 0.1776 # 1/5.63
@@ -36,8 +34,8 @@ class Ultrasonic:
 
         self.average = self.summed/10.0
 
-        print "Distance is %d" %self.average
-        print('Test Print')
+	print "Distance is %d" %self.average
         return self.average
 
+    get_distance
  
