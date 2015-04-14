@@ -6,6 +6,8 @@ from position_controller import PositionController
 import sys, math, time
 import socket, struct, threading
 import numpy as np
+import Adafruit_BBIO.ADC as ADC
+import logging
 
 ###############################
 #Setup of vidro and controller#
@@ -37,10 +39,18 @@ seq1_cnt = 0
 seq2_cnt = 0
 seq3_cnt = 0
 
+readings = [0]
+count = 1
+
 # Err Bounds
 pos_bound_err = 100
+
 # RC Over-ride reset initialization
 reset_val = 1
+
+ADC.setup()
+
+logging.basicConfig(filename = 'testlog3.log', filemode = 'w', level = logging.DEBUG)
 
 print('Heading to main loop')
 
@@ -50,6 +60,36 @@ print('Heading to main loop')
 
 while(1):
 	vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
+
+    #Perform Ultrasonic Sensor Calculations
+
+    while count < 10:
+        value = ADC.read("P9_40")
+        voltage = value * 1.5
+
+        #Do conversion math here
+        distance = voltage / 0.00008901 * 1.175
+        #print('readings at %d' %count)
+        #print('is %f' %readings[count -1])
+
+        if count > 2:
+            if distance > (readings[count - 1] + 500):
+                distance = readings[count - 1]
+            elif distance <= (readings[count - 1] - 500):
+                distance = readings[count - 1]
+
+        readings.append(distance)
+
+        summed = sum(readings)
+
+        count += 1
+
+    average = summed/9.0
+
+    count = 1
+    readings = [0]
+
+
 	# Auto Loop
 	while vidro.current_rc_channels[4] > 1600 and flight_ready == True:
 		if(reset_val):
@@ -76,45 +116,36 @@ while(1):
 
         controller.update_gains()
         vidro.update_mavlink() # Grab updated rc channel values
+
         print('Auto Loop')
 
-        # Seq. 0: Takeoff to 1 m and origin
+        # Seq. 0: Takeoff to 1 m
         if sequence == 0:
             # Assign Commands
             alt_com = take_off_alt
             error_z = controller.rc_alt(alt_com)
-            error_yaw = controller.rc_yaw(yaw_com)
-            #error_x_y = controller.rc_xy(x_com, y_com)
-            err_x = 0#error_x_y[0]
-            err_y = 0#error_x_y[1]
-            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z))+' Err Yaw: '+repr(round(error_yaw))+' Err X: '+repr(round(err_x))+' Err y: '+repr(round(err_y)))
-            if ((abs(error_z) < pos_bound_err) and (abs(error_yaw) < yaw_bound_err) and (abs(err_y) < pos_bound_err) and (abs(err_x) < pos_bound_err)):# Closes Error
+            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
+            if abs(error_z) < pos_bound_err:# Closes Error
                 seq0_cnt += 1 # just update the sequence if the loop is closed for 3 software loops
                 if seq0_cnt == 10:
                     sequence = 1
 
-        #Seq. 1: Guidance
+        #Seq. 1: Hold Altitude
         if sequence == 1:
             error_z = controller.rc_alt(alt_com)
-            error_yaw = controller.rc_yaw(yaw_com)
-            err_x = 0
-            err_y = 0
-            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z))+' Err Yaw: '+repr(round(error_yaw))+' Err X: '+repr(round(err_x))+' Err y: '+repr(round(err_y)))
-            if ((abs(error_z) < pos_bound_err) and (abs(error_yaw) < yaw_bound_err) and (abs(err_y) < pos_bound_err) and (abs(err_x) < pos_bound_err)):# Closes Error
-                # Hold her steady while we img proc
-                vidro.set_rc_throttle(vidro.base_rc_throttle)
-                vidro.set_rc_roll(vidro.base_rc_roll)
-                vidro.set_rc_pitch(vidro.base_rc_pitch)
-                vidro.set_rc_yaw(vidro.base_rc_yaw)
-                #Go to Land
-                sequence = 2
+            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
+            if abs(error_z) < pos_bound_err:# Closes Error
+                seq1_cnt += 1
+                if seq1_cnt == 100:
+                    #Go to Land
+                    sequence = 2
 
         #Move to landing position
         if sequence == 2:
             error_z = controller.rc_alt(alt_com)
-            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z))+' Err Yaw: '+repr(round(error_yaw))+' Err X: '+repr(round(err_x))+' Err y: '+repr(round(err_y)))
-            if ((abs(error_z) < pos_bound_err) and (abs(error_yaw) < yaw_bound_err) and (abs(err_y) < pos_bound_err) and (abs(err_x) < pos_bound_err)):# Closes Error
-                alt_com-=1
+            print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
+            if abs(error_z) < pos_bound_err:# Closes Error
+                alt_com -= 1
                 if(alt_com<170):
                     sequence = 3
 
