@@ -24,16 +24,9 @@ controller.update_gains()
 
 take_off_alt = 1000
 # Pos Commands
-x_com = 0
-y_com = 0
 alt_com = 0
-yaw_com = 0
 # Pos Values
-x_pos = 0
-y_pos = 0
 alt_pos = 0
-yaw_pos = 0
-guid_adv = 500 # Guidance advancing value, ie move n mm towards estimated bearing and re-check
 
 #############
 # FSM Values#
@@ -46,7 +39,6 @@ seq3_cnt = 0
 
 # Err Bounds
 pos_bound_err = 100
-yaw_bound_err = 0.2
 # RC Over-ride reset initialization
 reset_val = 1
 
@@ -130,9 +122,6 @@ while(1):
         if sequence == 3:
             controller.vidro.set_rc_throttle(0)# it'll round it to minimum which is like 1100
             controller.vidro.rc_throttle_reset()
-            controller.vidro.rc_yaw_reset()
-            controller.vidro.rc_pitch_reset()
-            controller.vidro.rc_roll_reset()
             reset_val = 0
             vidro.close()
             break	# this break won't break all the loops, just the auto loop
