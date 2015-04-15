@@ -96,6 +96,10 @@ class PositionController:
         #Get error
         #Changed to not use vicon positioning
         self.distance = ultra.get_dist()
+	if self.distance > 3000:
+		self.distance = 200
+	else:
+		self.distance = self.distance
         self.error_alt= target_alt - self.distance
 	logging.debug('ultrasonic distance is %f' %self.distance)
         #print('ultrasonic distance is %f' %self.distance)

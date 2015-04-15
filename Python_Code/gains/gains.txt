@@ -1,9 +1,9 @@
 alt_K_P:
-0.2
+0.12
 alt_K_I:
 0.002
 alt_K_D:
-0.7
+0.01
 yaw_K_P:
 200.0
 yaw_K_I:

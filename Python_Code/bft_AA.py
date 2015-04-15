@@ -43,14 +43,21 @@ seq3_cnt = 0
 off_cnt = 0
 
 # Err Bounds
-pos_bound_err = 100
+pos_bound_err = 150
 
 # RC Over-ride reset initialization
 reset_val = 1
 
 ADC.setup()
 
-logging.basicConfig(filename = 'flight1.log', level = logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger=logging.getLogger(__name__)
+
+handler=logging.FileHandler('flight2.log')
+handler.setLevel(logging.INFO)
+
+logger.addHandler(handler)
+logger.info('Starting Log')
 
 print('Heading to main loop')
 
@@ -62,11 +69,12 @@ while(1):
 	vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
 	#Auto Loop
+	#print('Outer Loop')
 	while vidro.current_rc_channels[4] > 1600:
-		if(reset_val):
-			print 'Reset Over-rides'
-			controller.vidro.rc_throttle_reset()
-			reset_val = 0
+		#if(reset_val):
+		#	print 'Reset Over-rides'
+		#	controller.vidro.rc_throttle_reset()
+		#	reset_val = 0
 
 		vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
@@ -79,7 +87,7 @@ while(1):
 		controller.update_gains()
 		vidro.update_mavlink() # Grab updated rc channel values
 
-		print('Auto Loop')
+		#print('Inner Loop')
 
 		# Seq. 0: Takeoff to 1 m
 		if sequence == 0:
@@ -94,6 +102,9 @@ while(1):
 			    error_z = error_z
 		        #print('Sequence 0')
 			#print('Error z is %f' %error_z)
+			#print('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
+			logger.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
+			logger.info('Error z is %f' %error_z)
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq0_cnt += 1 # just update the sequence if the loop is closed for 20 software loops
 				if seq0_cnt == 20:
@@ -149,10 +160,10 @@ while(1):
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
-		off_count += 1
-		if off_count == 100
-			controller.vidro.set_rc_throttle = 0
-			off_count = 0
+		#off_cnt += 1
+		#if off_cnt == 100:
+		#	controller.vidro.set_rc_throttle(0)
+		#	off_cnt = 0
 
 
 
