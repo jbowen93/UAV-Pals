@@ -48,6 +48,10 @@ pos_bound_err = 150
 # RC Over-ride reset initialization
 reset_val = 1
 
+#Variable for last value
+last_error = 0
+
+#Setup Shit
 ADC.setup()
 
 logging.basicConfig(level=logging.INFO)
@@ -95,11 +99,15 @@ while(1):
 			alt_com = take_off_alt
 			error_z = controller.rc_alt(alt_com)
 			if error_z is None:
-			    error_z = 0
+			    error_z = last_error
 			elif abs(error_z) > 3500:
 			    error_z = 800
 			else:
 			    error_z = error_z
+
+			#Store the Last error
+    		        last_error = error_z
+
 		        #print('Sequence 0')
 			#print('Error z is %f' %error_z)
 			#print('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
@@ -117,11 +125,14 @@ while(1):
 
 		        #print('Sequence 1')
 			if error_z is None:
-			    error_z = 0
+			    error_z = last_error
 			elif abs(error_z) > 3500:
 			    error_z = 800
 			else:
 			    error_z = error_z
+    		        
+			#Store the Last Error
+		        last_error = error_z
 
 			#print('Error z is %f' %error_z)
 
@@ -138,11 +149,14 @@ while(1):
 
 		        #print('Sequence 2')
 			if error_z is None:
-			    error_z = 0
+			    error_z = last_error
 			elif abs(error_z) > 3500:
 			    error_z = 800
 			else:
 			    error_z = error_z
+	    		   
+			#Store the Last Error
+			last_error = error_z
 
 			#print('Error z is %f' %error_z)
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
@@ -157,6 +171,8 @@ while(1):
 			reset_val = 0
 			vidro.close()
 			break	# this break won't break all the loops, just the auto loop
+
+
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
