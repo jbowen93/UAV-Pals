@@ -194,7 +194,7 @@ class Vidro:
 			
 			self.base_rc_roll = 1535
 			self.base_rc_pitch = 1535
-			self.base_rc_throttle = 1500
+			self.base_rc_throttle = 1520
 			self.base_rc_yaw = 1470
 		else:
 			#for GCS with wireless radio
@@ -206,7 +206,6 @@ class Vidro:
 			self.device = '/dev/ttyUSB0'
 			#self.device = '/dev/ttyACM0'
 
-            #TODO May have to change these
 			self.base_rc_roll = 1519
 			self.base_rc_pitch = 1519
 			self.base_rc_throttle = 1516
@@ -266,7 +265,6 @@ class Vidro:
 		#Start of a log
 		logging.basicConfig(filename='vidro.log', level=logging.DEBUG)
 
-    #TODO Read this stuff
 	def connect_mavlink(self):
 		"""
 		Initialize connection to pixhawk and make sure to get first heartbeat message

@@ -206,7 +206,6 @@ class Vidro:
 			self.device = '/dev/ttyUSB0'
 			#self.device = '/dev/ttyACM0'
 
-            #TODO May have to change these
 			self.base_rc_roll = 1519
 			self.base_rc_pitch = 1519
 			self.base_rc_throttle = 1516
@@ -266,7 +265,6 @@ class Vidro:
 		#Start of a log
 		logging.basicConfig(filename='vidro.log', level=logging.DEBUG)
 
-    #TODO Read this stuff
 	def connect_mavlink(self):
 		"""
 		Initialize connection to pixhawk and make sure to get first heartbeat message
@@ -408,7 +406,7 @@ class Vidro:
 		if self.sitl == False:
 			self.disconnect_vicon()
 
-    #Wont be using vicon data
+    #TODO Will need to get this working for position control
 	def get_vicon(self):
 		"""
 		Gets vicon data in the folling format:

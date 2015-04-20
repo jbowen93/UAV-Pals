@@ -51,15 +51,14 @@ reset_val = 1
 #Variable for last value
 last_error = 0
 
-#Setup Shit
+#Setup ADC
 ADC.setup()
 
+#Setup Logging
 logging.basicConfig(level=logging.INFO)
 logger=logging.getLogger(__name__)
-
 handler=logging.FileHandler('flight2.log')
 handler.setLevel(logging.INFO)
-
 logger.addHandler(handler)
 logger.info('Starting Log')
 

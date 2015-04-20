@@ -1,27 +1,31 @@
 """
-Class for handling the Ultrasonic Sensor
+Test to verify that distance sensor is working
 """
+
 import Adafruit_BBIO.ADC as ADC
+import Ultrasonic as ultra
 import logging
 import time
 
-#Run once
-
 ADC.setup()
-logging.basicConfig(filename = 'testlog.log', level=logging.DEBUG)
+
+#Setup Logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename = 'ultra1.log')
+handler.setLevel(logging.INFO)
+logging.addHandler(handler)
+logger.info('Starting Log')
 
 #Run Forever
-while(1):   
+while(1):  
+ 
     #Take a reading
-    value = ADC.read("P9_40")
-    voltage = value * 1.5
+    distance = ultra.get_dist()
 
-    #Do conversion math here
-    distance = voltage / 0.00008901 * 1.175 #0.00013841
-
+    #Print and Log Distance values
     print "Distance is %f" %distance
-    logging.debug('Distance is %f' %distance)
-    #print "Voltage is %f" %voltage
-    #print "Value is %f" %value
-    time.sleep(0.1)
+    logging.info('Distance is %f' %distance)
+
+    time.sleep(0.05)
  
