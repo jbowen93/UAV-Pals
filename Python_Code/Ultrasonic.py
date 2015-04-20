@@ -15,8 +15,6 @@ def get_dist():
 
         #Do conversion math here
         distance = voltage / 0.00008901 * 1.175
-        #print('readings at %d' %count)
-        #print('is %f' %readings[count -1])
 
         if count > 2:
             if distance > (readings[count - 1] + 100):

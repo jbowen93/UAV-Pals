@@ -12,7 +12,7 @@ ADC.setup()
 #Setup Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename = 'ultra1.log')
+logging.basicConfig(filename = '/logs/ultra1.log')
 handler.setLevel(logging.INFO)
 logging.addHandler(handler)
 logger.info('Starting Log')
