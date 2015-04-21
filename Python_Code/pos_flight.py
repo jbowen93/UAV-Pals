@@ -14,13 +14,11 @@ import logging
 ###############################
 
 vidro = Vidro(False, 1)
-#TODO Will have to use vidro.connect() or vicon.connect_vicon()
 #flight_ready = vidro.connect()
 vidro.connect_mavlink()
 controller = PositionController(vidro)
 start_time = time.time()
-
-#Load gains
+# Load gains
 controller.update_gains() 
 
 ####################
@@ -42,6 +40,8 @@ seq1_cnt = 0
 seq2_cnt = 0
 seq3_cnt = 0
 
+off_cnt = 0
+
 # Err Bounds
 pos_bound_err = 150
 
@@ -54,23 +54,13 @@ last_error = 0
 #Setup ADC
 ADC.setup()
 
-#Setup Logging file 1 (For RC Values and Ultrasonic Readings)
-logging.basicConfig(level = logging.INFO)
-logger1 = logging.getLogger('1')
-handler1 = logging.FileHandler(filename = 'logs/Flight8_1.log', mode = 'w')
-handler1.setLevel(logging.INFO)
-logger1.addHandler(handler1)
-logger1.info('Starting Log 1')
-
-#Setup Logging file 2 (For Vicon Values)
+#Setup Logging
 logging.basicConfig(level=logging.INFO)
-logger2 = logging.getLogger('2')
-handler2 = logging.FileHandler(filename = 'logs/Flight*_2.log', mode = 'w')
-handler2.setLevel(logging.INFO)
-logger2.addHandler(handler2)
-logger2.info('Starting Log 2')
-
-
+logger=logging.getLogger(__name__)
+handler=logging.FileHandler('logs/flight5.log')
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.info('Starting Log')
 
 print('Heading to main loop')
 
@@ -84,6 +74,10 @@ while(1):
 	#Auto Loop
 	#print('Outer Loop')
 	while vidro.current_rc_channels[4] > 1600:
+		#if(reset_val):
+		#	print 'Reset Over-rides'
+		#	controller.vidro.rc_throttle_reset()
+		#	reset_val = 0
 
 		vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
@@ -116,8 +110,8 @@ while(1):
 		        #print('Sequence 0')
 			#print('Error z is %f' %error_z)
 			#print('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
-			logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
-			logger1.info('Error z is %f' %error_z)
+			logger.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
+			logger.info('Error z is %f' %error_z)
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq0_cnt += 1 # just update the sequence if the loop is closed for 20 software loops
 				if seq0_cnt == 20:
@@ -181,6 +175,10 @@ while(1):
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
+		#off_cnt += 1
+		#if off_cnt == 100:
+		#	controller.vidro.set_rc_throttle(0)
+		#	off_cnt = 0
 
 
 

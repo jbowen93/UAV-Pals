@@ -183,7 +183,7 @@ class ViconStreamer:
 		for i in self._desiredStreams:
 		    print self.data[i], "  ",
 		print
-
+#Need to remove altitude hold parts (maybe)
 class Vidro:
 
 	def __init__(self, sitl, vicon_num):
@@ -204,7 +204,6 @@ class Vidro:
 			#for BeagleBone Black
 			self.baud = 57600
 			self.device = '/dev/ttyUSB0'
-			#self.device = '/dev/ttyACM0'
 
 			self.base_rc_roll = 1519
 			self.base_rc_pitch = 1519
@@ -334,7 +333,7 @@ class Vidro:
 				self.current_rc_channels[5] = self.msg.chan6_raw
 			except:
 				pass
-			
+			#TODO enable this and verify that it is working!
 ##			if self.vicon_time >= self.get_vicon()[0]:
 ##				logging.error('Vicon system values are remainng the same. Stop the system and restart the vicon values')
 ##				self.set_rc_throttle(self.base_rc_throttle)
@@ -406,7 +405,7 @@ class Vidro:
 		if self.sitl == False:
 			self.disconnect_vicon()
 
-    #Wont be using vicon data
+    #TODO Will need to get this working for position control
 	def get_vicon(self):
 		"""
 		Gets vicon data in the folling format:

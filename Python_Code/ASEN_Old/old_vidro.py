@@ -183,7 +183,7 @@ class ViconStreamer:
 		for i in self._desiredStreams:
 		    print self.data[i], "  ",
 		print
-#Need to remove altitude hold parts (maybe)
+
 class Vidro:
 
 	def __init__(self, sitl, vicon_num):
@@ -194,17 +194,17 @@ class Vidro:
 			
 			self.base_rc_roll = 1535
 			self.base_rc_pitch = 1535
-			self.base_rc_throttle = 1520
+			self.base_rc_throttle = 1370
 			self.base_rc_yaw = 1470
 		else:
 			#for GCS with wireless radio
 			#self.baud = 57600 
 			#self.device = '/dev/ttyUSB0'
-
-			#for BeagleBone Black
-			self.baud = 57600
-			self.device = '/dev/ttyUSB0'
-
+			
+			#for raspberry pi
+			self.baud = 115200 
+			self.device = '/dev/ttyACM0'
+			
 			self.base_rc_roll = 1519
 			self.base_rc_pitch = 1519
 			self.base_rc_throttle = 1516
@@ -333,15 +333,15 @@ class Vidro:
 				self.current_rc_channels[5] = self.msg.chan6_raw
 			except:
 				pass
-			#TODO enable this and verify that it is working!
-##			if self.vicon_time >= self.get_vicon()[0]:
-##				logging.error('Vicon system values are remainng the same. Stop the system and restart the vicon values')
-##				self.set_rc_throttle(self.base_rc_throttle)
-##				self.set_rc_roll(self.base_rc_roll)
-##				self.set_rc_pitch(self.base_rc_pitch)
-##				self.set_rc_yaw(self.base_rc_yaw)
-##				self.vicon_error = True
-##			self.vicon_time = self.get_vicon()[0]
+			
+			if self.vicon_time >= self.get_vicon()[0]:
+				logging.error('Vicon system values are remainng the same. Stop the system and restart the vicon values')
+				self.set_rc_throttle(self.base_rc_throttle)
+				self.set_rc_roll(self.base_rc_roll)
+				self.set_rc_pitch(self.base_rc_pitch)
+				self.set_rc_yaw(self.base_rc_yaw)
+				self.vicon_error = True
+			self.vicon_time = self.get_vicon()[0]
 
 			self.send_rc_overrides()
 
@@ -381,6 +381,14 @@ class Vidro:
 				return False
 		print "Vicon Connected..."
 		return True
+		"""
+		if len(self.s.getData()) < 51:
+			self.num_vicon_objs = 1
+		elif len(self.s.getData()) > 50:
+			self.num_vicon_objs = 2
+		else:
+			logging.error('Number of Vicon objects was not set. This means that length of s.getData() was not correct')
+		"""
 
 	def disconnect_vicon(self):
 		"""
@@ -405,11 +413,9 @@ class Vidro:
 		if self.sitl == False:
 			self.disconnect_vicon()
 
-        #TODO Will need to get this working for position control
 	def get_vicon(self):
 		"""
 		Gets vicon data in the folling format:
-
 		if num_vicon_objs == 1:
 			vicon_data()[0] = time
 			vicon_data()[1] = x
@@ -418,7 +424,6 @@ class Vidro:
 			vicon_data()[4] = x rotation
 			vicon_data()[5] = y rotation
 			vicon_data()[6] = z rotation
-
 		if num_vicon_objs == 2:
 			vicon_data()[0] = time
 			vicon_data()[1] = x_1
