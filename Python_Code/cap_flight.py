@@ -130,7 +130,6 @@ while(1):
 		#Seq. 1: Hold Altitude
 		if sequence == 1:
 			error_z = controller.rc_alt(alt_com)
-			#print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
 
 		        #print('Sequence 1')
 			if error_z is None:
@@ -145,6 +144,7 @@ while(1):
 
 			#print('Error z is %f' %error_z)
 
+		"""
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq1_cnt += 1
 				if seq1_cnt == 1000:
@@ -181,7 +181,7 @@ while(1):
 			vidro.close()
 			break	# this break won't break all the loops, just the auto loop
 
-
+		"""
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
