@@ -5,6 +5,8 @@ Test to check that we can log to sub-directories
 import logging
 import time
 
+start_time = time.time()
+
 #Setup Logging 1
 logging.basicConfig(level = logging.INFO)
 logger1 = logging.getLogger('1')
@@ -29,6 +31,8 @@ for x in range (0, 20):
     val2 = x*2
 
     #Print and Log value
+    current_time = time.time() - start_time
+    logger1.info('Time Stamp: %f' %current_time)
     logger1.info('Log value is %f' %val1)
     logger2.info('Log value is %f' %val2)
 
