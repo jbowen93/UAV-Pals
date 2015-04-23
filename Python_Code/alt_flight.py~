@@ -59,7 +59,7 @@ ADC.setup()
 #Setup Logging file 1 (For RC Values and Ultrasonic Readings)
 logging.basicConfig(level = logging.INFO)
 logger1 = logging.getLogger('1')
-handler1 = logging.FileHandler(filename = 'logs/Flight8_1.log', mode = 'w')
+handler1 = logging.FileHandler(filename = 'logs/Flight10_1.log', mode = 'w')
 handler1.setLevel(logging.INFO)
 logger1.addHandler(handler1)
 logger1.info('Starting Log 1')
@@ -67,7 +67,7 @@ logger1.info('Starting Log 1')
 #Setup Logging file 2 (For Vicon Values)
 logging.basicConfig(level=logging.INFO)
 logger2 = logging.getLogger('2')
-handler2 = logging.FileHandler(filename = 'logs/Flight8_2.log', mode = 'w')
+handler2 = logging.FileHandler(filename = 'logs/Flight10_2.log', mode = 'w')
 handler2.setLevel(logging.INFO)
 logger2.addHandler(handler2)
 logger2.info('Starting Log 2')
@@ -88,10 +88,7 @@ while(1):
 		#Get Timestamp
 		current_time = time.time() - start_time
 
-		#Logging for file 1
-		logger1.info('Time is %f' %current_time)
-		logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
-		logger1.info('Error z is %f' %error_z)
+
 	
 		#Logging for file 2
 		"""
@@ -130,6 +127,10 @@ while(1):
 			#Store the Last error
     		        last_error = error_z
 
+		#Logging for file 1
+		logger1.info('Time is %f' %current_time)
+		logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
+		logger1.info('Error z is %f' %error_z)
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()

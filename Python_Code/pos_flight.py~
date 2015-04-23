@@ -14,7 +14,7 @@ import logging
 ###############################
 
 vidro = Vidro(False, 1)
-#flight_ready = vidro.connect_vicon()
+flight_ready = vidro.connect_vicon()
 vidro.connect_mavlink()
 controller = PositionController(vidro)
 
@@ -58,7 +58,7 @@ ADC.setup()
 #Setup Logging file 1 (For RC Values and Ultrasonic Readings)
 logging.basicConfig(level = logging.INFO)
 logger1 = logging.getLogger('1')
-handler1 = logging.FileHandler(filename = 'logs/Flight8_1.log', mode = 'w')
+handler1 = logging.FileHandler(filename = 'logs/Flight12_1.log', mode = 'w')
 handler1.setLevel(logging.INFO)
 logger1.addHandler(handler1)
 logger1.info('Starting Log 1')
