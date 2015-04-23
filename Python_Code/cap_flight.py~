@@ -15,9 +15,11 @@ import logging
 
 vidro = Vidro(False, 1)
 #TODO Will have to use vidro.connect() or vicon.connect_vicon()
-#flight_ready = vidro.connect()
+#flight_ready = vidro.connect_vicon()
+#flight_ready = vidro.connect_vicon()
 vidro.connect_mavlink()
 controller = PositionController(vidro)
+
 start_time = time.time()
 
 #Load gains
@@ -65,12 +67,10 @@ logger1.info('Starting Log 1')
 #Setup Logging file 2 (For Vicon Values)
 logging.basicConfig(level=logging.INFO)
 logger2 = logging.getLogger('2')
-handler2 = logging.FileHandler(filename = 'logs/Flight*_2.log', mode = 'w')
+handler2 = logging.FileHandler(filename = 'logs/Flight8_2.log', mode = 'w')
 handler2.setLevel(logging.INFO)
 logger2.addHandler(handler2)
 logger2.info('Starting Log 2')
-
-
 
 print('Heading to main loop')
 
@@ -81,16 +81,38 @@ print('Heading to main loop')
 while(1):
 	vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
-	#Logging
+	#Time Stamp
 	current_time = time.time() - start_time
+
+	#Logging for file 1 (May not work, may need to be in Auto Loop)
 	logger1.info('Time is %f' %current_time)
 	logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
 	logger1.info('Error z is %f' %error_z)
+
+	#Logging for file 2
+	logger2.info('Vicon x position is %f' %controller.vidro.get_position()[0])
+	logger2.info('Vicon y position is %f' %controller.vidro.get_position()[1])
+	logger2.info('Vicon z position is %f' %controller.vidro.get_position()[2])
 	
 
 	#Auto Loop
 	#print('Outer Loop')
 	while vidro.current_rc_channels[4] > 1600:
+
+		#Get Timestamp
+		current_time = time.time() - start_time
+
+		#Logging for file 1
+		logger1.info('Time is %f' %current_time)
+		logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
+		logger1.info('Error z is %f' %error_z)
+	
+		#Logging for file 2
+		logger2.info('Time is %f' %current time)
+		logger2.info('Vicon x position is %f' %controller.vidro.get_position()[0])
+		logger2.info('Vicon y position is %f' %controller.vidro.get_position()[1])
+		logger2.info('Vicon z position is %f' %controller.vidro.get_position()[2])
+	
 
 		vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
 
@@ -120,13 +142,14 @@ while(1):
 			#Store the Last error
     		        last_error = error_z
 
-			logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
-			logger1.info('Error z is %f' %error_z)
+			"""
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq0_cnt += 1 # just update the sequence if the loop is closed for 20 software loops
 				if seq0_cnt == 20:
 					sequence = 1
+			"""
 
+		"""
 		#Seq. 1: Hold Altitude
 		if sequence == 1:
 			error_z = controller.rc_alt(alt_com)
@@ -144,7 +167,6 @@ while(1):
 
 			#print('Error z is %f' %error_z)
 
-		"""
 			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
 				seq1_cnt += 1
 				if seq1_cnt == 1000:
@@ -185,6 +207,8 @@ while(1):
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
+		controller.vidro_rc_pitch_reset()
+		controller.vidro_rc_roll_reset()
 
 
 

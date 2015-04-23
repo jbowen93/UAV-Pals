@@ -130,6 +130,7 @@ class PositionController:
 
         return self.error_alt
 
+    #TODO This code didn't really work
     def rc_xy(self, target_x, target_y):
         """
         Sends quad copter to given x-y point

@@ -80,21 +80,7 @@ print('Heading to main loop')
 
 while(1):
 	vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
-
-	#Time Stamp
-	current_time = time.time() - start_time
-
-	#Logging for file 1 (May not work, may need to be in Auto Loop)
-	logger1.info('Time is %f' %current_time)
-	logger1.info('Commanded RC Throttle is %f' %vidro.current_rc_channels[2])
-	logger1.info('Error z is %f' %error_z)
-
-	#Logging for file 2
-	logger2.info('Vicon x position is %f' %controller.vidro.get_position()[0])
-	logger2.info('Vicon y position is %f' %controller.vidro.get_position()[1])
-	logger2.info('Vicon z position is %f' %controller.vidro.get_position()[2])
 	
-
 	#Auto Loop
 	#print('Outer Loop')
 	while vidro.current_rc_channels[4] > 1600:
@@ -108,13 +94,12 @@ while(1):
 		logger1.info('Error z is %f' %error_z)
 	
 		#Logging for file 2
+		"""
 		logger2.info('Time is %f' %current time)
 		logger2.info('Vicon x position is %f' %controller.vidro.get_position()[0])
 		logger2.info('Vicon y position is %f' %controller.vidro.get_position()[1])
 		logger2.info('Vicon z position is %f' %controller.vidro.get_position()[2])
-	
-
-		vidro.update_mavlink() # Grab updated rc channel values. This is the right command for it, but it doesn't always seem to update RC channels
+		"""
 
 		#Reset of errors after each time control loop finishes
 		controller.I_error_alt = 0
@@ -122,12 +107,15 @@ while(1):
 		controller.previous_time_alt = (time.time() - controller.timer) * 10
 		vidro.previous_error_alt = 0
 
+		#Get PID gains
 		controller.update_gains()
-		vidro.update_mavlink() # Grab updated rc channel values
+
+		# Grab updated rc channel values
+		vidro.update_mavlink() 
 
 		#print('Inner Loop')
 
-		# Seq. 0: Takeoff to 1 m
+		# Seq. 0: Takeoff to 1 m and hold
 		if sequence == 0:
 			# Assign Commands
 			alt_com = take_off_alt
@@ -142,74 +130,7 @@ while(1):
 			#Store the Last error
     		        last_error = error_z
 
-			"""
-			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
-				seq0_cnt += 1 # just update the sequence if the loop is closed for 20 software loops
-				if seq0_cnt == 20:
-					sequence = 1
-			"""
-
-		"""
-		#Seq. 1: Hold Altitude
-		if sequence == 1:
-			error_z = controller.rc_alt(alt_com)
-
-		        #print('Sequence 1')
-			if error_z is None:
-			    error_z = last_error
-			elif abs(error_z) > 3500:
-			    error_z = 800
-			else:
-			    error_z = error_z
-    		        
-			#Store the Last Error
-		        last_error = error_z
-
-			#print('Error z is %f' %error_z)
-
-			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
-				seq1_cnt += 1
-				if seq1_cnt == 1000:
-					#Go to Land
-					sequence = 2
-
-		#Move to landing position
-		if sequence == 2:
-			error_z = controller.rc_alt(alt_com)
-			#print('Seq: '+repr(sequence)+' Err Z: '+repr(round(error_z)))
-
-		        #print('Sequence 2')
-			if error_z is None:
-			    error_z = last_error
-			elif abs(error_z) > 3500:
-			    error_z = 800
-			else:
-			    error_z = error_z
-	    		   
-			#Store the Last Error
-			last_error = error_z
-
-			#print('Error z is %f' %error_z)
-			if abs(error_z) < pos_bound_err and abs(error_z) > 0:# Closes Error
-				alt_com -= 1
-				if(alt_com<170):
-					sequence = 3
-
-		# Land
-		if sequence == 3:
-			controller.vidro.set_rc_throttle(0)# it'll round it to minimum which is like 1100
-			controller.vidro.rc_throttle_reset()
-			reset_val = 0
-			vidro.close()
-			break	# this break won't break all the loops, just the auto loop
-
-		"""
 
 	if vidro.current_rc_channels[4] < 1600:
 		controller.vidro.rc_throttle_reset()
-		controller.vidro_rc_pitch_reset()
-		controller.vidro_rc_roll_reset()
-
-
-
 
